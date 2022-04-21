@@ -10,4 +10,5 @@ services:
     working_dir: /srv
     environment:
       - TEST_VAR=TEST_ENV_VAR
-    command: sh -c "sh gradlew bootRun"
+    command: /bin/sh -c './boot.sh' 
+      
