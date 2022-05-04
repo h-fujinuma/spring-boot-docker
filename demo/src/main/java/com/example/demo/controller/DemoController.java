@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,16 +13,13 @@ import fi.solita.clamav.ClamAVClient;
 @RestController
 public class DemoController {
 
-    @Value("${env.var}")
-    String envVar;
-
     int threadSafeConfirmValue = 0;
 
     @GetMapping
     public String doGetDemoSample(){
         threadSafeConfirmValue++;
         // threadSafeConfirmValueはスレッド間で共有されるので、別々のリクエストAを送ってリクエストBを送るとthreadSafeConfirmValueは加算される
-        return envVar + "スレッドセーフの確認："+ threadSafeConfirmValue;
+        return "スレッドセーフの確認："+ threadSafeConfirmValue;
     }
     
     @GetMapping("/clamAV/ping")
