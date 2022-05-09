@@ -1,3 +1,6 @@
+FROM clamav/clamav:0.104 AS clamav
+USER root
+
 FROM openjdk:11 AS jdk
 USER root
 ARG JAR_FILE=build/libs/demo-0.0.1-SNAPSHOT.jar

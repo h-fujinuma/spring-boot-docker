@@ -1,7 +1,3 @@
-echo "start: apt -y update"
-apt -y update
-echo "start: apt -y install clamav-daemon"
-apt -y install clamav-daemon
 echo "start edit clamd.conf"
 sed -i "s/User clamav/User root/" /etc/clamav/clamd.conf
 sed -i "s/LocalSocket \/var\/run\/clamav\/clamd.ctl/# LocalSocket \/var\/run\/clamav\/clamd.ctl/" /etc/clamav/clamd.conf
