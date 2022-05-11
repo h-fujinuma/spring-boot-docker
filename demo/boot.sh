@@ -1,26 +1,23 @@
-echo "start: apt -y update"
-apt -y update
-echo "start: apt -y install clamav-daemon"
-apt -y install clamav-daemon=0.103.5+dfsg-0+deb11u1
+#!/bin/bash
+
+CLAMD_CONF="/etc/clamav/clamd.conf"
+
 echo "start edit clamd.conf"
-sed -i "s/User clamav/User root/" /etc/clamav/clamd.conf
-sed -i "s/LocalSocket \/var\/run\/clamav\/clamd.ctl/# LocalSocket \/var\/run\/clamav\/clamd.ctl/" /etc/clamav/clamd.conf
-sed -i "s/FixStaleSocket true/# FixStaleSocket true/" /etc/clamav/clamd.conf
-sed -i "s/LocalSocketGroup clamav/# LocalSocketGroup clamav/" /etc/clamav/clamd.conf
-sed -i "s/LocalSocketMode 666/# LocalSocketMode 666/" /etc/clamav/clamd.conf
-if grep -q TCPSocket /etc/clamav/clamd.conf; then \
-echo "TCPSocket already exists" ; \
+sed -i "s/LocalSocket \/var\/run\/clamav\/clamd.ctl/# LocalSocket \/var\/run\/clamav\/clamd.ctl/" $CLAMD_CONF
+sed -i "s/FixStaleSocket true/# FixStaleSocket true/" $CLAMD_CONF
+sed -i "s/LocalSocketGroup clamav/# LocalSocketGroup clamav/" $CLAMD_CONF
+sed -i "s/LocalSocketMode 666/# LocalSocketMode 666/" $CLAMD_CONF
+if grep -q TCPSocket $CLAMD_CONF; then \
+    echo "TCPSocket already exists" ; \
 else \
-echo "TCPSocket 3310" >> /etc/clamav/clamd.conf ; \
+    echo "TCPSocket 3310" >> $CLAMD_CONF ; \
 fi
-if grep -q TCPAddr /etc/clamav/clamd.conf; then \
-echo "TCPAddr already exists" ; \
+if grep -q TCPAddr $CLAMD_CONF; then \
+    echo "TCPAddr already exists" ; \
 else \
-echo "TCPAddr 127.0.0.1" >> /etc/clamav/clamd.conf ; \
+    echo "TCPAddr 127.0.0.1" >> $CLAMD_CONF ; \
 fi
-echo "satrt: freshclam"
+echo "start: freshclam"
 freshclam
-echo "satrt: clamd"
+echo "start: clamd"
 clamd
-echo "start: spring"
-java -jar app.jar
