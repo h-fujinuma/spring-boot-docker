@@ -21,5 +21,5 @@ echo "start: freshclam"
 freshclam
 echo "start: clamd"
 clamd
-# 本当は必要ないはずだが？
-java -jar app.jar
+# javaアプリの実行
+sh ./run.sh
