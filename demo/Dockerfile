@@ -7,6 +7,9 @@ COPY ${JAR_FILE} app.jar
 
 COPY --from=clamav /var/lib/clamav /var/lib/clamav
 
+COPY ./conf/clamd.conf /clamd.conf
+COPY ./conf/freshclam.conf /freshclam.conf
+
 ARG CLAMAV_VERSION=0.103.5+dfsg-0+deb11u1
 
 RUN apt -y update && apt -y install clamav=$CLAMAV_VERSION \
