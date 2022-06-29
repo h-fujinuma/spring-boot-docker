@@ -6,8 +6,8 @@ mv -f /freshclam.conf /etc/clamav
 chown -R clamav:clamav /etc/clamav
 
 echo "start: freshclam"
-freshclam
+freshclam -d
 echo "start: clamd"
 clamd
 # javaアプリの実行
-sh ./run.sh
+java -jar app.jar

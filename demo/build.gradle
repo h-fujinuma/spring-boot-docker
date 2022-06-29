@@ -18,9 +18,16 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	dependencies {
+		dependency 'com.google.cloud:spring-cloud-gcp-dependencies:3.0.0'
+	}
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation group: 'fi.solita.clamav', name: 'clamav-client', version: '1.0.1'
+	implementation 'org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.8.RELEASE'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
