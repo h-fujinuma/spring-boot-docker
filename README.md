@@ -17,3 +17,6 @@ gradlew bootRun
     * ```docker build --build-arg JAR_FILE=build/libs/demo-0.0.1-SNAPSHOT.jar --no-cache -t <任意のタグ名> .```
     * ```docker run -p 8080:8080 <上記コマンドで命名した任意のタグ名>```
     * ```http://localhost:8080/```にアクセスして動作確認
+
+## curlでtat計測
+```curl http://localhost:8080/clamav/instream?filePath=sample.txt -o nul -w "%{time_total}" 2> nul```
