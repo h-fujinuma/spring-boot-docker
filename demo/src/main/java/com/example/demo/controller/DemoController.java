@@ -30,9 +30,8 @@ public class DemoController {
 
     private String hostName = "localhost";
     private int port = 3310;
-    private int timeout = 5000;
+    private int timeout = 60000;
     private String tmpFileParentPath = "/";
-    private static final int CHUNK_SIZE = 2048;
 
     @GetMapping("/clamav/ping")
     public String doPing(){
@@ -60,26 +59,22 @@ public class DemoController {
     @GetMapping("/clamav/scan")
     public String doScan(@RequestParam("filePath") String filePath){
         String result;
-        try(InputStream inputStream = downloadFileFromGCS(filePath)){
-            writeFile2Local(inputStream, filePath);
-            // scanコマンドの実装
-            try (Socket s = new Socket(hostName,port); OutputStream outs = new BufferedOutputStream(s.getOutputStream())) {
-                s.setSoTimeout(timeout);
-                String fileFullPath = new File(tmpFileParentPath + filePath).getAbsolutePath();
-                String command = "zSCAN " + fileFullPath + "\0";
-                outs.write(asBytes(command));
-                outs.flush();
-                byte[] chunk = new byte[CHUNK_SIZE];
+        writeFile2Local(filePath);
+        try (Socket s = new Socket(hostName,port); OutputStream outs = new BufferedOutputStream(s.getOutputStream())) {
+            s.setSoTimeout(timeout);
+            String fileFullPath = new File(tmpFileParentPath + filePath).getAbsolutePath();
+            String command = "zSCAN " + fileFullPath + "\0";
+            outs.write(asBytes(command));
+            outs.flush();
+            byte[] chunk = new byte[1024];
 
-                InputStream inputStreamClamav = s.getInputStream();
-                int copyIndex = 0;
-                int readResult;
-                do {
-                  readResult = inputStreamClamav.read(chunk, copyIndex, Math.max(chunk.length - copyIndex, 0));
-                  copyIndex += readResult;
-                } while (readResult > 0);
-                result = new String(chunk, StandardCharsets.UTF_8).replace("\u0000", "");
+            InputStream inputStreamClamav = s.getInputStream();
+            int copyIndex = 0;
+            int readResult;
+            while((readResult = inputStreamClamav.read(chunk, copyIndex, Math.max(chunk.length - copyIndex, 0))) != -1){
+                copyIndex += readResult;
             }
+            result = new String(chunk, StandardCharsets.US_ASCII).replace("\u0000", "");
         }catch(IOException e){
             throw new RuntimeException(e);
         }finally{
@@ -102,8 +97,9 @@ public class DemoController {
         }
     }
 
-    private void writeFile2Local(InputStream inputStream, String filePath){
-        try(OutputStream output= new FileOutputStream(tmpFileParentPath + filePath);){
+    private void writeFile2Local(String filePath){
+        try(InputStream inputStream = downloadFileFromGCS(filePath);
+            OutputStream output= new FileOutputStream(tmpFileParentPath + filePath);){
             int c;
             while ((c = inputStream.read()) != -1){
                 output.write(c);
