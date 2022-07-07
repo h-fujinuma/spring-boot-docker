@@ -12,10 +12,6 @@ COPY ./conf/freshclam.conf /freshclam.conf
 
 ARG CLAMAV_VERSION=0.103.6+dfsg-0+deb11u1
 
-# ローカル試す用
-ENV GOOGLE_APPLICATION_CREDENTIALS=/credential.json
-COPY ./credential.json /credential.json
-
 RUN apt -y update && apt -y install clamav=$CLAMAV_VERSION \
     clamav-daemon=$CLAMAV_VERSION \
     && chown -R clamav:clamav /var/lib/clamav

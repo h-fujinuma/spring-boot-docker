@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
@@ -85,16 +83,7 @@ public class DemoController {
 
     @GetMapping("/test")
     public String testEndpoint(@RequestParam("test") String testParam){
-        try(BufferedReader br = new BufferedReader(new InputStreamReader(downloadFileFromGCS(testParam)));){
-            StringBuilder sb = new StringBuilder();
-            String line;        
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            return line;
-        } catch(IOException e){
-            throw new RuntimeException(e);
-        }
+        return testParam;
     }
 
     private void writeFile2Local(String filePath){
